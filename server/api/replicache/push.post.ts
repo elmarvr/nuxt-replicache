@@ -11,6 +11,8 @@ export default defineEventHandler(async (event) => {
     await applyMutation(useDrizzle(), push.clientGroupID, mutation);
   }
 
+  poke();
+
   return {};
 });
 

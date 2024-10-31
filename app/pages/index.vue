@@ -1,46 +1,7 @@
 <script setup lang="ts">
-import {
-  Replicache,
-  type MutatorDefs,
-  type WriteTransaction,
-} from "replicache";
-import type { Message } from "~~/server/database/schema";
 import { nanoid } from "nanoid";
 
-const runtimeConfig = useRuntimeConfig();
-
-const mutators = {
-  async createMessage(
-    tx: WriteTransaction,
-    {
-      id,
-      from,
-      content,
-      order,
-    }: {
-      id: string;
-      from: string;
-      content: string;
-      order: number;
-    }
-  ) {
-    await tx.set(`message/${id}`, {
-      from,
-      content,
-      order,
-    });
-  },
-} satisfies MutatorDefs;
-
-const replicache = new Replicache({
-  name: "chat-user-id",
-  licenseKey: runtimeConfig.public.replicacheLicenseKey,
-  mutators,
-  pullURL: "/api/replicache/pull",
-  pushURL: "/api/replicache/push",
-  logLevel: "debug",
-  pullInterval: 10000,
-});
+const replicache = useReplicache("chat-user-id");
 
 const messages = useSubscribe(
   replicache,
