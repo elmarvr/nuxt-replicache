@@ -1,8 +1,12 @@
-import {
-  Replicache,
-  type MutatorDefs,
-  type WriteTransaction,
-} from "replicache";
+import { Replicache } from "replicache";
+import { defineClient as defineMutators } from "~~/replicache/client";
+import type { ServerType } from "~~/server/api/replicache/push.post";
+
+const mutators = defineMutators<ServerType>({
+  createMessage: async (tx, { id, ...input }) => {
+    await tx.set(`message/${id}`, input);
+  },
+});
 
 export function useReplicache(name: string) {
   const runtimeConfig = useRuntimeConfig();
@@ -26,25 +30,25 @@ export function useReplicache(name: string) {
   return replicache;
 }
 
-const mutators = {
-  async createMessage(
-    tx: WriteTransaction,
-    {
-      id,
-      from,
-      content,
-      order,
-    }: {
-      id: string;
-      from: string;
-      content: string;
-      order: number;
-    }
-  ) {
-    await tx.set(`message/${id}`, {
-      from,
-      content,
-      order,
-    });
-  },
-} satisfies MutatorDefs;
+// const mutators = {
+//   async createMessage(
+//     tx: WriteTransaction,
+//     {
+//       id,
+//       from,
+//       content,
+//       order,
+//     }: {
+//       id: string;
+//       from: string;
+//       content: string;
+//       order: number;
+//     }
+//   ) {
+//     await tx.set(`message/${id}`, {
+//       from,
+//       content,
+//       order,
+//     });
+//   },
+// } satisfies MutatorDefs;

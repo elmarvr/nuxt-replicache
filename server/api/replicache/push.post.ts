@@ -1,8 +1,22 @@
 import { consola } from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { type ReplicacheClientInsert } from "~~/server/database/schema";
+import { defineServer, mutation } from "~~/replicache/server";
+import {
+  messageInsertSchema,
+  type ReplicacheClientInsert,
+} from "~~/server/database/schema";
 import { DatabaseTransaction } from "~~/server/utils/drizzle";
+
+const server = defineServer({
+  createMessage: mutation
+    .input(messageInsertSchema)
+    .handler(async ({ input }) => {
+      await useDrizzle().insert(table.message).values(input);
+    }),
+});
+
+export type ServerType = typeof server;
 
 export default defineEventHandler(async (event) => {
   const push = await readValidatedBody(event, pushRequestV1Schema.parse);
