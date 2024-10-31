@@ -1,45 +1,86 @@
 <script setup lang="ts">
-const runtimeConfig = useRuntimeConfig()
-const colors = ['#f87171', '#fb923c', '#fbbf24', '#facc15', '#a3e635', '#4ade80', '#34d399', '#2dd4bf', '#22d3ee', '#38bdf8', '#60a5fa', '#818cf8', '#a78bfa', '#c084fc', '#e879f9', '#f472b6', '#fb7185']
-const color = useState('color', () => colors[Math.floor(Math.random() * colors.length)])
+import {
+  Replicache,
+  type MutatorDefs,
+  type WriteTransaction,
+} from "replicache";
+import type { Message } from "~~/server/database/schema";
+
+const runtimeConfig = useRuntimeConfig();
+
+const mutators = {
+  async createMessage(
+    tx: WriteTransaction,
+    {
+      id,
+      from,
+      content,
+      order,
+    }: {
+      id: string;
+      from: string;
+      content: string;
+      order: number;
+    }
+  ) {
+    await tx.set(`message/${id}`, {
+      from,
+      content,
+      order,
+    });
+  },
+} satisfies MutatorDefs;
+
+const replicache = new Replicache({
+  name: "chat-user-id",
+  licenseKey: runtimeConfig.public.replicacheLicenseKey,
+  mutators,
+  pullURL: "/api/replicache/pull",
+  pushURL: "/api/replicache/push",
+  logLevel: "debug",
+});
+
+const messages = useSubscribe(
+  replicache,
+  async (tx) => {
+    const list = await tx
+      .scan<Message>({ prefix: "message/" })
+      .entries()
+      .toArray();
+
+    list.sort(([, { ord: a }], [, { ord: b }]) => a - b);
+    return list;
+  },
+  { default: [] }
+);
+
+function onSubmit(event: Event) {
+  event.preventDefault();
+  const form = event.target as HTMLFormElement;
+  const formData = new FormData(form);
+  const from = formData.get("from") as string;
+  const content = formData.get("content") as string;
+
+  replicache.mutate.createMessage({
+    id: new Date().toISOString(),
+    from,
+    content,
+    order: messages.value.length - 1,
+  });
+}
 </script>
 
 <template>
-  <div class="centered">
-    <h1 :style="{ color }">
-      {{ runtimeConfig.public.helloText }}
-    </h1>
-    <NuxtLink to="/" external>
-      refresh
-    </NuxtLink>
-  </div>
-</template>
+  <form @submit="onSubmit">
+    <input type="text" name="from" placeholder="From" />
+    <input type="text" name="content" placeholder="Content" />
 
-<style scoped>
-.centered {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-h1 {
-  font-size: 32px;
-}
-@media (min-width: 768px) {
-  h1 {
-    font-size: 64px;
-  }
-}
-a {
-  color: #888;
-  text-decoration: none;
-  font-size: 18px;
-}
-a:hover {
-  text-decoration: underline;
-}
-</style>
+    <button type="submit">Send</button>
+  </form>
+  <ul>
+    <li v-for="[key, value] in messages" :key="key">
+      <strong>{{ value.from }}</strong
+      >: {{ value.content }}
+    </li>
+  </ul>
+</template>

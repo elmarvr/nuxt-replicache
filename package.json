@@ -13,13 +13,18 @@
   },
   "dependencies": {
     "@nuxthub/core": "^0.8.4",
+    "@vueuse/core": "^11.2.0",
     "@vueuse/nuxt": "^11.2.0",
     "drizzle-orm": "^0.36.0",
+    "drizzle-zod": "^0.5.1",
     "nuxt": "^3.13.2",
+    "replicache": "^15.0.1",
     "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241022.0",
     "drizzle-kit": "^0.27.0",
     "typescript": "^5.6.3",
     "vue-tsc": "^2.1.8",

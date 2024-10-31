@@ -7,8 +7,11 @@ export default defineTask({
   },
   async run() {
     const t0 = performance.now();
+    const db = useDrizzle();
 
-    //Run seed task here
+    await db.insert(table.replicacheServer).values({
+      id: 1,
+    });
 
     const t1 = performance.now();
     consola.success(`Database seed done in ${Math.round(t1 - t0)}ms`);

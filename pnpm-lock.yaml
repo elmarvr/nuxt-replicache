@@ -8,23 +8,38 @@ dependencies:
   '@nuxthub/core':
     specifier: ^0.8.4
     version: 0.8.4(vite@5.4.10)
+  '@vueuse/core':
+    specifier: ^11.2.0
+    version: 11.2.0(vue@3.5.12)
   '@vueuse/nuxt':
     specifier: ^11.2.0
     version: 11.2.0(nuxt@3.13.2)(vue@3.5.12)
   drizzle-orm:
     specifier: ^0.36.0
-    version: 0.36.0
+    version: 0.36.0(@cloudflare/workers-types@4.20241022.0)
+  drizzle-zod:
+    specifier: ^0.5.1
+    version: 0.5.1(drizzle-orm@0.36.0)(zod@3.23.8)
   nuxt:
     specifier: ^3.13.2
     version: 3.13.2(drizzle-orm@0.36.0)(typescript@5.6.3)(vite@5.4.10)(vue-tsc@2.1.10)
+  replicache:
+    specifier: ^15.0.1
+    version: 15.0.1
   vue:
     specifier: ^3.5.12
     version: 3.5.12(typescript@5.6.3)
   vue-router:
     specifier: ^4.4.5
     version: 4.4.5(vue@3.5.12)
+  zod:
+    specifier: ^3.23.8
+    version: 3.23.8
 
 devDependencies:
+  '@cloudflare/workers-types':
+    specifier: ^4.20241022.0
+    version: 4.20241022.0
   drizzle-kit:
     specifier: ^0.27.0
     version: 0.27.0
@@ -36,7 +51,7 @@ devDependencies:
     version: 2.1.10(typescript@5.6.3)
   wrangler:
     specifier: ^3.83.0
-    version: 3.84.0
+    version: 3.84.0(@cloudflare/workers-types@4.20241022.0)
 
 packages:
 
@@ -349,6 +364,11 @@ packages:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
+  /@badrap/valita@0.3.11:
+    resolution: {integrity: sha512-oak0W8bycFjnrLeVCVvZqkOWTGh74wCPKUxGLJyhRukRs+V/hQdfZp1eDcQE4Gf3UrtJWfR/Ou4Xe0DZqJZ2FA==}
+    engines: {node: '>= 16'}
+    dev: false
+
   /@cloudflare/kv-asset-handler@0.3.4:
     resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
     engines: {node: '>=16.13'}
@@ -410,7 +430,6 @@ packages:
 
   /@cloudflare/workers-types@4.20241022.0:
     resolution: {integrity: sha512-1zOAw5QIDKItzGatzCrEpfLOB1AuMTwVqKmbw9B9eBfCUGRFNfJYMrJxIwcse9EmKahsQt2GruqU00pY/GyXgg==}
-    dev: false
 
   /@cspotcode/source-map-support@0.8.1:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -2254,6 +2273,22 @@ packages:
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
     dev: false
 
+  /@rocicorp/lock@1.0.4:
+    resolution: {integrity: sha512-FavTiO8ETXFXDVfA87IThGduTTTR8iqzBnr/c60gUUmbk7knGEXPmf2B+yiNuluJD0ku0fL2V2r62UXnsLXl6w==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      '@rocicorp/resolver': 1.0.2
+    dev: false
+
+  /@rocicorp/logger@5.3.0:
+    resolution: {integrity: sha512-j5WYYkzpGxkemS9cUEzGvWJFOdrKRSbTXKC6P032oXMnVb5VLr/aN/7RT7jczAwmQgkY2ds+/93CEiua4rCY1A==}
+    dev: false
+
+  /@rocicorp/resolver@1.0.2:
+    resolution: {integrity: sha512-TfjMTQp9cNNqNtHFfa+XHEGdA7NnmDRu+ZJH4YF3dso0Xk/b9DMhg/sl+b6CR4ThFZArXXDsG1j8Mwl34wcOZQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: false
+
   /@rollup/plugin-alias@5.1.1(rollup@4.24.3):
     resolution: {integrity: sha512-PR9zDb+rOzkRb2VD+EuKB7UC41vU5DIwZ5qqCpk0KJudcWAyi8rvYOhS7+L5aZCspw1stTViLgN5v6FF1p5cgQ==}
     engines: {node: '>=14.0.0'}
@@ -3585,7 +3620,7 @@ packages:
       drizzle-orm:
         optional: true
     dependencies:
-      drizzle-orm: 0.36.0
+      drizzle-orm: 0.36.0(@cloudflare/workers-types@4.20241022.0)
     dev: false
 
   /de-indent@1.0.2:
@@ -3738,7 +3773,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.36.0:
+  /drizzle-orm@0.36.0(@cloudflare/workers-types@4.20241022.0):
     resolution: {integrity: sha512-6BETYPdKSR7cDHC0ZfqZk2VrKJ8n/Rfd3ajFPsAbc69gi87nwZ6oBA2wUGMELHA0tQE4kUKN0Ds00LUZQ6Z69A==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -3829,6 +3864,18 @@ packages:
         optional: true
       sqlite3:
         optional: true
+    dependencies:
+      '@cloudflare/workers-types': 4.20241022.0
+    dev: false
+
+  /drizzle-zod@0.5.1(drizzle-orm@0.36.0)(zod@3.23.8):
+    resolution: {integrity: sha512-C/8bvzUH/zSnVfwdSibOgFjLhtDtbKYmkbPbUCq46QZyZCH6kODIMSOgZ8R7rVjoI+tCj3k06MRJMDqsIeoS4A==}
+    peerDependencies:
+      drizzle-orm: '>=0.23.13'
+      zod: '*'
+    dependencies:
+      drizzle-orm: 0.36.0(@cloudflare/workers-types@4.20241022.0)
+      zod: 3.23.8
     dev: false
 
   /duplexer@0.1.2:
@@ -5996,6 +6043,17 @@ packages:
       redis-errors: 1.2.0
     dev: false
 
+  /replicache@15.0.1:
+    resolution: {integrity: sha512-I7HK6h2eT2QNxO4mwQFDqbuxhvCQgSlU4QuwfN9dqA6EKnO73VYiKB676r36N3q5W7L+htLgAcrSsrX+JPsRlQ==}
+    engines: {node: '>=14.8.0'}
+    hasBin: true
+    dependencies:
+      '@badrap/valita': 0.3.11
+      '@rocicorp/lock': 1.0.4
+      '@rocicorp/logger': 5.3.0
+      '@rocicorp/resolver': 1.0.2
+    dev: false
+
   /require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -7088,7 +7146,7 @@ packages:
       '@cloudflare/workerd-windows-64': 1.20241022.0
     dev: true
 
-  /wrangler@3.84.0:
+  /wrangler@3.84.0(@cloudflare/workers-types@4.20241022.0):
     resolution: {integrity: sha512-EA8oh7YQmZ3kD+a5MId9reHKGgXpodmsPWMLriE5gT5YmG9is66n0AA2tyLzQZKZXmgbo6JyGxvCDPcLeb/X0w==}
     engines: {node: '>=16.17.0'}
     hasBin: true
@@ -7100,6 +7158,7 @@ packages:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
       '@cloudflare/workers-shared': 0.7.0
+      '@cloudflare/workers-types': 4.20241022.0
       '@esbuild-plugins/node-globals-polyfill': 0.2.3(esbuild@0.17.19)
       '@esbuild-plugins/node-modules-polyfill': 0.2.2(esbuild@0.17.19)
       blake3-wasm: 2.1.5
