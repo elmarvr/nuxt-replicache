@@ -1,13 +1,8 @@
 import { consola } from "consola";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
-import {
-  messageInsertSchema,
-  type ReplicacheClientInsert,
-} from "~~/server/database/schema";
-import {
-  buildConflictUpdateColumns,
-  DatabaseTransaction,
-} from "~~/server/utils/drizzle";
+import { type ReplicacheClientInsert } from "~~/server/database/schema";
+import { DatabaseTransaction } from "~~/server/utils/drizzle";
 
 export default defineEventHandler(async (event) => {
   const push = await readValidatedBody(event, pushRequestV1Schema.parse);
@@ -15,6 +10,8 @@ export default defineEventHandler(async (event) => {
   for (const mutation of push.mutations) {
     await applyMutation(useDrizzle(), push.clientGroupID, mutation);
   }
+
+  return {};
 });
 
 async function applyMutation(
@@ -39,6 +36,7 @@ async function applyMutation(
 
   const nextVersion = server.version + 1;
   const lastMutationId = await getLastMutationId(tx, mutation.clientID);
+
   const nextMutationId = lastMutationId + 1;
 
   if (mutation.id < nextMutationId) {
@@ -57,7 +55,6 @@ async function applyMutation(
   switch (mutation.name) {
     case "createMessage": {
       await tx.insert(table.message).values({
-        id: mutation.args.id,
         ord: mutation.args.order,
         sender: mutation.args.from,
         content: mutation.args.content,
@@ -102,11 +99,11 @@ async function upsertReplicacheClient(
     .values(value)
     .onConflictDoUpdate({
       target: table.replicacheClient.id,
-      set: buildConflictUpdateColumns(table.replicacheClient, [
-        "clientGroupId",
-        "lastMutationId",
-        "version",
-      ]),
+      set: {
+        clientGroupId: sql.raw(`excluded.client_group_id`),
+        lastMutationId: sql.raw(`excluded.last_mutation_id`),
+        version: sql.raw(`excluded.version`),
+      },
     });
 }
 

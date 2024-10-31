@@ -5,6 +5,7 @@ import {
   type WriteTransaction,
 } from "replicache";
 import type { Message } from "~~/server/database/schema";
+import { nanoid } from "nanoid";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -38,17 +39,20 @@ const replicache = new Replicache({
   pullURL: "/api/replicache/pull",
   pushURL: "/api/replicache/push",
   logLevel: "debug",
+  pullInterval: 10000,
 });
 
 const messages = useSubscribe(
   replicache,
   async (tx) => {
     const list = await tx
-      .scan<Message>({ prefix: "message/" })
+      .scan<{ order: number; id: number; from: string; content: string }>({
+        prefix: "message/",
+      })
       .entries()
       .toArray();
 
-    list.sort(([, { ord: a }], [, { ord: b }]) => a - b);
+    list.sort(([, { order: a }], [, { order: b }]) => a - b);
     return list;
   },
   { default: [] }
@@ -61,11 +65,14 @@ function onSubmit(event: Event) {
   const from = formData.get("from") as string;
   const content = formData.get("content") as string;
 
+  const lastMessage = messages.value[messages.value.length - 1]?.[1];
+  const order = lastMessage?.order ? lastMessage.order + 1 : 0;
+
   replicache.mutate.createMessage({
-    id: new Date().toISOString(),
+    id: nanoid(),
     from,
     content,
-    order: messages.value.length - 1,
+    order,
   });
 }
 </script>

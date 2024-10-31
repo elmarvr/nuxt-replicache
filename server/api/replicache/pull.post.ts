@@ -1,4 +1,3 @@
-import { gt } from "drizzle-orm";
 import { PatchOperation } from "replicache";
 import { z } from "zod";
 import { DatabaseTransaction } from "~~/server/utils/drizzle";
@@ -48,7 +47,7 @@ export default defineEventHandler(async (event) => {
       if (row.version > server.version) {
         patch.push({
           op: "del",
-          key: row.id,
+          key: `message/${row.id}`,
         });
       }
       return;
@@ -56,20 +55,20 @@ export default defineEventHandler(async (event) => {
 
     patch.push({
       op: "put",
-      key: row.id,
-      value: row,
+      key: `message/${row.id}`,
+      value: {
+        order: row.ord,
+        from: row.sender,
+        content: row.content,
+      },
     });
   }
 
-  const payload = {
-    lastMutationID: lastMutationIdChanges,
+  return {
+    lastMutationIDChanges: lastMutationIdChanges,
     cookie: server.version,
     patch,
   };
-
-  console.log(payload);
-
-  return payload;
 });
 
 async function getLastMutationIdChanges(

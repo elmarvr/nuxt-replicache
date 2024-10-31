@@ -1,13 +1,9 @@
 import { drizzle } from "drizzle-orm/d1";
-export { sql, eq, and, or } from "drizzle-orm";
+export * from "drizzle-orm/expressions";
 
 import * as schema from "../database/schema";
-import { ExtractTablesWithRelations, getTableColumns, SQL } from "drizzle-orm";
-import {
-  BaseSQLiteDatabase,
-  SQLiteTable,
-  SQLiteTransaction,
-} from "drizzle-orm/sqlite-core";
+import { sql, getTableColumns, SQL } from "drizzle-orm";
+import { BaseSQLiteDatabase, SQLiteTable } from "drizzle-orm/sqlite-core";
 
 export const table = {
   replicacheServer: schema.replicacheServer,

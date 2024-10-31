@@ -1,5 +1,6 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { nanoid } from "nanoid";
 
 export const replicacheServer = sqliteTable("replicache_server", {
   id: integer().primaryKey().notNull(),
@@ -7,7 +8,10 @@ export const replicacheServer = sqliteTable("replicache_server", {
 });
 
 export const message = sqliteTable("message", {
-  id: text().primaryKey().notNull(),
+  id: text()
+    .primaryKey()
+    .notNull()
+    .$default(() => nanoid()),
   sender: text().notNull(),
   content: text().notNull(),
   ord: integer().notNull(),
